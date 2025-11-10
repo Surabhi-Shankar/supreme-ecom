@@ -1,88 +1,90 @@
     import { useEffect, useState } from "react";
-import logo from "../assets/images/logo.png"; // update path if needed
 
     export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
-    // Detect scroll for glow effect
+    // Handle scroll effect
     useEffect(() => {
-        const handleScroll = () => {
-        setIsScrolled(window.scrollY > 10);
-        };
+        const handleScroll = () => setIsScrolled(window.scrollY > 10);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // Close menu when clicking outside on mobile
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+        if (
+            menuOpen &&
+            !event.target.closest(".navContent") &&
+            !event.target.closest(".hamburgerBtn")
+        ) {
+            setMenuOpen(false);
+        }
+        };
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, [menuOpen]);
+
     return (
-        <div
-        className="nav"
+        <nav
         style={{
             width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0.8rem 2rem",
-            backgroundColor: isScrolled ? "#081a39" : "#0a1f44",
-            color: "#fff",
-            boxShadow: isScrolled
-            ? "0 4px 20px rgba(46, 204, 113, 0.5)"
-            : "0 2px 10px rgba(0,0,0,0.3)",
             position: "sticky",
             top: 0,
             left: 0,
-            right: 0,
             zIndex: 100,
+            backgroundColor: isScrolled ? "#081a39" : "#0a1f44",
+            color: "#fff",
+            boxShadow: isScrolled
+            ? "0 4px 20px rgba(46,204,113,0.5)"
+            : "0 2px 10px rgba(0,0,0,0.3)",
             transition: "all 0.4s ease",
+            padding: "0.6rem 1rem",
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "1rem",
         }}
         >
-        {/* Brand Logo + Title */}
-        <div
-            className="brand"
-            style={{ display: "flex", alignItems: "center", gap: "12px" }}
-        >
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: 1, minWidth: 0 }}>
             <div
             style={{
-                width: "60px",
-                height: "60px",
+                width: "40px",
+                height: "40px",
                 borderRadius: "50%",
-                backgroundColor: "#fff",
+                backgroundColor: "#2ecc71",
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "center",
-                overflow: "hidden",
-                boxShadow: "0 0 15px rgba(46, 204, 113, 0.5)",
-                transition: "transform 0.3s ease",
+                alignItems: "center",
+                fontSize: "1.2rem",
+                color: "#fff",
+                fontWeight: "700",
+                cursor: "pointer",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
-            <img
-                src={logo}
-                alt="Supreme Ecom Logo"
-                style={{
-                width: "55px",
-                height: "55px",
-                objectFit: "cover",
-                borderRadius: "50%",
-                }}
-            />
+            🍃
             </div>
-            <h2 style={{ color: "#2ecc71", margin: 0, fontWeight: "600" }}>
-            Supreme-Ecom
+            <h2
+            style={{
+                color: "#2ecc71",
+                margin: 0,
+                fontWeight: 600,
+                fontSize: "clamp(1rem, 4vw, 1.2rem)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+            }}
+            >
+            Pureza
             </h2>
         </div>
 
-        {/* Search Bar */}
-        <div
-            className="search"
-            style={{
-            flex: 1,
-            margin: "0 2rem",
-            maxWidth: "600px",
-            }}
-        >
+        {/* Search Bar (always visible) */}
+        <div style={{ flex: "1 1 300px", minWidth: "200px", maxWidth: "600px" }}>
             <input
-            placeholder="Search products, categories..."
+            placeholder="Search products..."
             style={{
                 width: "100%",
                 padding: "0.6rem 1rem",
@@ -91,17 +93,90 @@ import logo from "../assets/images/logo.png"; // update path if needed
                 outline: "none",
                 fontSize: "0.95rem",
                 boxShadow: "0 0 8px rgba(255,255,255,0.15)",
+                backgroundColor: "rgba(255,255,255,0.95)",
             }}
             />
         </div>
 
-        {/* Right Side Buttons */}
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-            <div className="badge" style={badgeStyle}>Profile</div>
-            <div className="badge" style={badgeStyle}>Cart (0)</div>
-            <div className="badge" style={badgeStyle}>Best Sellers</div>
+        {/* Hamburger Menu (mobile) */}
+        <div
+            className="hamburgerBtn"
+            onClick={(e) => {
+            e.stopPropagation();
+            setMenuOpen(!menuOpen);
+            }}
+            style={{
+            display: "none",
+            cursor: "pointer",
+            flexShrink: 0,
+            padding: "8px",
+            borderRadius: "4px",
+            }}
+        >
+            <div
+            style={{
+                width: "25px",
+                height: "3px",
+                backgroundColor: "#2ecc71",
+                margin: "5px 0",
+                transition: "all 0.3s ease",
+                transform: menuOpen ? "rotate(-45deg) translate(-5px,6px)" : "none",
+            }}
+            />
+            <div
+            style={{
+                width: "25px",
+                height: "3px",
+                backgroundColor: "#2ecc71",
+                margin: "5px 0",
+                transition: "all 0.3s ease",
+                opacity: menuOpen ? 0 : 1,
+            }}
+            />
+            <div
+            style={{
+                width: "25px",
+                height: "3px",
+                backgroundColor: "#2ecc71",
+                margin: "5px 0",
+                transition: "all 0.3s ease",
+                transform: menuOpen ? "rotate(45deg) translate(-5px,-6px)" : "none",
+            }}
+            />
         </div>
+
+        {/* Collapsible Menu Items */}
+        <div
+            className={`navContent ${menuOpen ? "openMenu" : ""}`}
+            style={{
+            flex: "2 1 auto",
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: "1rem",
+            }}
+        >
+            <div style={badgeStyle}>Profile</div>
+            <div style={badgeStyle}>Cart (0)</div>
+            <div style={badgeStyle}>Best Sellers</div>
         </div>
+
+        {/* Responsive CSS */}
+        <style>{`
+            @media (max-width: 1024px) {
+            .hamburgerBtn { display: block !important; }
+            .navContent.openMenu {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(46,204,113,0.3);
+            }
+            }
+        `}</style>
+        </nav>
     );
     }
 
@@ -112,9 +187,9 @@ import logo from "../assets/images/logo.png"; // update path if needed
     borderRadius: "20px",
     color: "#fff",
     cursor: "pointer",
-    fontWeight: "500",
-    transition: "all 0.3s ease",
-    boxShadow: "0 0 8px rgba(46, 204, 113, 0.4)",
-    border: "1px solid #27ae60",
+    fontWeight: 500,
+    fontSize: "0.9rem",
+    textAlign: "center",
+    flex: "1 1 auto",
+    minWidth: "80px",
     };
-
