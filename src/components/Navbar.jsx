@@ -3,12 +3,20 @@
     export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     // Handle scroll effect
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    // Track window width for responsiveness
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     // Close menu when clicking outside on mobile
@@ -81,7 +89,7 @@
             </h2>
         </div>
 
-        {/* Search Bar (always visible) */}
+        {/* Search Bar */}
         <div style={{ flex: "1 1 300px", minWidth: "200px", maxWidth: "600px" }}>
             <input
             placeholder="Search products..."
@@ -98,84 +106,74 @@
             />
         </div>
 
-        {/* Hamburger Menu (mobile) */}
-        <div
+        {/* Hamburger Menu (Mobile) */}
+        {windowWidth <= 1024 && (
+            <div
             className="hamburgerBtn"
             onClick={(e) => {
-            e.stopPropagation();
-            setMenuOpen(!menuOpen);
+                e.stopPropagation();
+                setMenuOpen(!menuOpen);
             }}
             style={{
-            display: "none",
-            cursor: "pointer",
-            flexShrink: 0,
-            padding: "8px",
-            borderRadius: "4px",
+                display: "flex",
+                flexDirection: "column",
+                cursor: "pointer",
+                flexShrink: 0,
+                padding: "8px",
+                gap: "4px",
             }}
-        >
+            >
             <div
-            style={{
+                style={{
                 width: "25px",
                 height: "3px",
                 backgroundColor: "#2ecc71",
-                margin: "5px 0",
                 transition: "all 0.3s ease",
                 transform: menuOpen ? "rotate(-45deg) translate(-5px,6px)" : "none",
-            }}
+                }}
             />
             <div
-            style={{
+                style={{
                 width: "25px",
                 height: "3px",
                 backgroundColor: "#2ecc71",
-                margin: "5px 0",
                 transition: "all 0.3s ease",
                 opacity: menuOpen ? 0 : 1,
-            }}
+                }}
             />
             <div
-            style={{
+                style={{
                 width: "25px",
                 height: "3px",
                 backgroundColor: "#2ecc71",
-                margin: "5px 0",
                 transition: "all 0.3s ease",
                 transform: menuOpen ? "rotate(45deg) translate(-5px,-6px)" : "none",
-            }}
+                }}
             />
-        </div>
+            </div>
+        )}
 
-        {/* Collapsible Menu Items */}
-        <div
-            className={`navContent ${menuOpen ? "openMenu" : ""}`}
+        {/* Menu Items */}
+        {(windowWidth > 1024 || menuOpen) && (
+            <div
+            className="navContent"
             style={{
-            flex: "2 1 auto",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: "1rem",
+                flex: "2 1 auto",
+                display: "flex",
+                flexWrap: windowWidth > 1024 ? "wrap" : "column",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: "1rem",
+                width: windowWidth > 1024 ? "auto" : "100%",
+                paddingTop: windowWidth > 1024 ? "0" : "1rem",
+                borderTop: windowWidth > 1024 ? "none" : "1px solid rgba(46,204,113,0.3)",
             }}
-        >
+            >
             <div style={badgeStyle}>Profile</div>
             <div style={badgeStyle}>Cart (0)</div>
             <div style={badgeStyle}>Best Sellers</div>
-        </div>
-
-        {/* Responsive CSS */}
-        <style>{`
-            @media (max-width: 1024px) {
-            .hamburgerBtn { display: block !important; }
-            .navContent.openMenu {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                gap: 1rem;
-                padding-top: 1rem;
-                border-top: 1px solid rgba(46,204,113,0.3);
-            }
-            }
-        `}</style>
+            </div>
+        )}
         </nav>
     );
     }

@@ -1,6 +1,6 @@
-  import { motion } from "framer-motion";
+    import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import ProductCard from "../components/ProductCard"; // ✅ Import here
 import products from "../data/products";
 
     const ProductSection = () => {
@@ -8,7 +8,7 @@ import products from "../data/products";
     const [columns, setColumns] = useState(3);
     const productsPerPage = 10;
 
-    // Responsive columns
+    // Responsive columns setup
     const updateColumns = () => {
         if (window.innerWidth < 640) setColumns(1);
         else if (window.innerWidth < 1024) setColumns(2);
@@ -29,20 +29,15 @@ import products from "../data/products";
     const handlePageChange = (pageNumber) => {
         if (pageNumber < 1 || pageNumber > totalPages) return;
         setCurrentPage(pageNumber);
-        window.scrollTo({ top: 100, behavior: "smooth" }); // below navbar
+        window.scrollTo({ top: 100, behavior: "smooth" });
     };
 
-    // Generate smart page numbers (5 at a time)
     const getPageNumbers = () => {
         let pages = [];
         let start = Math.max(currentPage - 2, 1);
         let end = Math.min(start + 4, totalPages);
-
         if (end - start < 4) start = Math.max(end - 4, 1);
-
-        for (let i = start; i <= end; i++) {
-        pages.push(i);
-        }
+        for (let i = start; i <= end; i++) pages.push(i);
         return pages;
     };
 
@@ -52,6 +47,7 @@ import products from "../data/products";
             Our Natural Products
         </h2>
 
+        {/* Product Grid */}
         <motion.div
             initial="hidden"
             animate="visible"
@@ -63,47 +59,11 @@ import products from "../data/products";
             }}
         >
             {currentProducts.map((item) => (
-            <Link key={item.id} to={`/product/${item.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                <motion.div
-                whileHover={{ scale: 1.05, boxShadow: "0 8px 25px rgba(46,204,113,0.7)" }}
-                transition={{ duration: 0.3 }}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                style={{
-                    borderRadius: "12px",
-                    padding: "1rem",
-                    textAlign: "center",
-                    backgroundColor: "#2c2c2c",
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.4)",
-                    cursor: "pointer",
-                    position: "relative",
-                    zIndex: 1,
-                }}
-                >
-                <motion.img
-                    src={item.image}
-                    alt={item.name}
-                    initial={{ scale: 0.95, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.5 }}
-                    style={{
-                    width: "100%",
-                    height: "220px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                    marginBottom: "0.5rem",
-                    }}
-                />
-                <h3 style={{ color: "#eee" }}>{item.name}</h3>
-                <p style={{ fontSize: "14px", color: "#aaa" }}>{item.description}</p>
-                <strong style={{ color: "#2ecc71" }}>₹{item.price}</strong>
-                </motion.div>
-            </Link>
+            <ProductCard key={item.id} p={item} />
             ))}
         </motion.div>
 
-        {/* Smart Pagination */}
+        {/* Pagination */}
         <div
             style={{
             display: "flex",
@@ -114,23 +74,14 @@ import products from "../data/products";
             alignItems: "center",
             }}
         >
-            {/* Previous button */}
             <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "6px",
-                border: "none",
-                cursor: currentPage === 1 ? "not-allowed" : "pointer",
-                backgroundColor: "#444",
-                color: "#fff",
-            }}
+            style={buttonStyle(currentPage === 1)}
             >
-            &#8592; Prev
+            ← Prev
             </button>
 
-            {/* First page + dots */}
             {currentPage > 3 && (
             <>
                 <button onClick={() => handlePageChange(1)} style={pageButtonStyle(currentPage === 1)}>
@@ -140,44 +91,41 @@ import products from "../data/products";
             </>
             )}
 
-            {/* Middle pages */}
             {getPageNumbers().map((num) => (
-            <button key={num} onClick={() => handlePageChange(num)} style={pageButtonStyle(currentPage === num)}>
+            <button
+                key={num}
+                onClick={() => handlePageChange(num)}
+                style={pageButtonStyle(currentPage === num)}
+            >
                 {num}
             </button>
             ))}
 
-            {/* Last page + dots */}
             {currentPage < totalPages - 2 && (
             <>
                 {currentPage < totalPages - 3 && <span style={{ color: "#aaa" }}>...</span>}
-                <button onClick={() => handlePageChange(totalPages)} style={pageButtonStyle(currentPage === totalPages)}>
+                <button
+                onClick={() => handlePageChange(totalPages)}
+                style={pageButtonStyle(currentPage === totalPages)}
+                >
                 {totalPages}
                 </button>
             </>
             )}
 
-            {/* Next button */}
             <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            style={{
-                padding: "0.5rem 1rem",
-                borderRadius: "6px",
-                border: "none",
-                cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-                backgroundColor: "#444",
-                color: "#fff",
-            }}
+            style={buttonStyle(currentPage === totalPages)}
             >
-            Next &#8594;
+            Next →
             </button>
         </div>
         </div>
     );
     };
 
-    // Dynamic page button style
+    // Pagination button styles
     const pageButtonStyle = (isActive) => ({
     padding: "0.5rem 1rem",
     borderRadius: "6px",
@@ -185,6 +133,17 @@ import products from "../data/products";
     cursor: "pointer",
     backgroundColor: isActive ? "#2ecc71" : "#444",
     color: "#fff",
+    transition: "all 0.3s ease",
+    });
+
+    const buttonStyle = (disabled) => ({
+    padding: "0.5rem 1rem",
+    borderRadius: "6px",
+    border: "none",
+    cursor: disabled ? "not-allowed" : "pointer",
+    backgroundColor: "#444",
+    color: "#fff",
+    opacity: disabled ? 0.5 : 1,
     });
 
     export default ProductSection;
