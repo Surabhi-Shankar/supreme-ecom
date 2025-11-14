@@ -1,7 +1,7 @@
     import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
-
+import { WishlistContext } from "../context/WishlistContext";
     export default function Navbar({ products, setFilteredProducts }) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -13,7 +13,10 @@ import { CartContext } from "../context/CartContext";
     const [activeCategory, setActiveCategory] = useState("All");
 
     const { cartItems } = useContext(CartContext);
+    const { wishlistItems } = useContext(WishlistContext); // Get wishlist items
+    
     const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const wishlistItemCount = wishlistItems.length; // Wishlist count
 
     const categories = ["All", "Skincare", "Haircare", "Electronics", "Fashion", "Home Essentials"];
     const menuItems = ["Best Sellers", "New Arrivals", "Deals", "About", "Contact"];
@@ -97,7 +100,13 @@ import { CartContext } from "../context/CartContext";
 
             {/* Cart & Wishlist */}
             <div className="action-icons">
-                <button className="action-btn">❤️</button>
+                {/* Wishlist with Badge */}
+                <Link to="/wishlist" className="action-btn wishlist-btn" style={{ position: "relative", textDecoration: "none" }}>
+                ❤️
+                {wishlistItemCount > 0 && (
+                    <span className="wishlist-badge">{wishlistItemCount}</span>
+                )}
+                </Link>
                 
                 {/* Cart with Badge */}
                 <Link to="/cart" className="action-btn cart-btn" style={{ position: "relative", textDecoration: "none" }}>
@@ -115,9 +124,15 @@ import { CartContext } from "../context/CartContext";
                 {profileOpen && (
                     <div className="profile-dropdown">
                     {profileItems.map((item) => (
-                        <button key={item} className="dropdown-item">
+                        <Link 
+                        key={item} 
+                        to={item === "Wishlist" ? "/wishlist" : item === "Orders" ? "/orders" : "#"} 
+                        className="dropdown-item"
+                        onClick={() => setProfileOpen(false)}
+                        style={{ textDecoration: "none", display: "block" }}
+                        >
                         {item}
-                        </button>
+                        </Link>
                     ))}
                     </div>
                 )}
@@ -153,6 +168,15 @@ import { CartContext } from "../context/CartContext";
                     {item}
                 </a>
                 ))}
+                {/* Mobile Wishlist Link */}
+                <Link 
+                to="/wishlist" 
+                className="mobile-menu-item"
+                onClick={() => setMenuOpen(false)}
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+                >
+                ❤️ Wishlist {wishlistItemCount > 0 && `(${wishlistItemCount})`}
+                </Link>
                 {/* Mobile Cart Link */}
                 <Link 
                 to="/cart" 
@@ -324,7 +348,7 @@ import { CartContext } from "../context/CartContext";
             transform: scale(1.1);
             }
 
-            .cart-badge {
+            .cart-badge, .wishlist-badge {
             position: absolute;
             top: 0;
             right: 0;
@@ -339,6 +363,14 @@ import { CartContext } from "../context/CartContext";
             justify-content: center;
             font-weight: bold;
             transform: translate(25%, -25%);
+            }
+
+            .wishlist-badge {
+            background: #e74c3c;
+            }
+
+            .cart-badge {
+            background: #e74c3c;
             }
 
             .profile-container {
@@ -370,6 +402,8 @@ import { CartContext } from "../context/CartContext";
             transition: all 0.2s ease;
             font-size: 0.9rem;
             font-weight: 500;
+            text-decoration: none;
+            display: block;
             }
 
             .dropdown-item:hover {

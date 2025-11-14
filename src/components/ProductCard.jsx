@@ -2,24 +2,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
     export default function ProductCard({ p }) {
     const { addToCart, cartItems } = useCart();
-    const [isAdding, setIsAdding] = useState(false);
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
-    // Check if product is already in cart
+    const [isAdding, setIsAdding] = useState(false);
+    const [isWishlisting, setIsWishlisting] = useState(false);
+
     const isInCart = cartItems.some(item => item.id === p.id);
     const cartItem = cartItems.find(item => item.id === p.id);
 
-    const handleAddToCart = async (e) => {
+    const inWishlist = isInWishlist(p.id);
+
+    const handleAddToCart = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
         setIsAdding(true);
         addToCart(p);
-        
-        // Reset animation after short delay
         setTimeout(() => setIsAdding(false), 500);
+    };
+
+    const handleWishlistToggle = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsWishlisting(true);
+        inWishlist ? removeFromWishlist(p.id) : addToWishlist(p);
+        setTimeout(() => setIsWishlisting(false), 500);
     };
 
     return (
@@ -36,6 +46,41 @@ import { useCart } from "../context/CartContext";
             transition: "all 0.3s ease",
         }}
         >
+        {/* Wishlist Heart Top-Right */}
+        <motion.button
+            onClick={handleWishlistToggle}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            animate={{ scale: isWishlisting ? 1.2 : 1 }}
+            disabled={isWishlisting}
+            style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "rgba(0, 0, 0, 0.7)",
+            border: "none",
+            borderRadius: "50%",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            fontSize: "1.2rem",
+            zIndex: 2,
+            color: inWishlist ? "#e74c3c" : "#666",
+            backdropFilter: "blur(10px)",
+            }}
+            title={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+            aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+        >
+            {isWishlisting ? (
+            <motion.span animate={{ rotate: 360 }} transition={{ duration: 0.5, repeat: Infinity }}>⭐</motion.span>
+            ) : (
+            <span>{inWishlist ? "❤️" : "🤍"}</span>
+            )}
+        </motion.button>
+
         {/* In Cart Badge */}
         {isInCart && (
             <motion.div
@@ -44,7 +89,7 @@ import { useCart } from "../context/CartContext";
             style={{
                 position: "absolute",
                 top: "10px",
-                right: "10px",
+                left: "10px",
                 background: "#2ecc71",
                 color: "white",
                 padding: "2px 8px",
@@ -79,15 +124,13 @@ import { useCart } from "../context/CartContext";
             ₹{p.price}
             </p>
         </Link>
-        
+
+        {/* Add to Cart Button */}
         <motion.button
             onClick={handleAddToCart}
             whileHover={{ scale: isAdding ? 1 : 1.05 }}
             whileTap={{ scale: 0.95 }}
-            animate={{ 
-            scale: isAdding ? 1.1 : 1,
-            background: isAdding ? "#27ae60" : "#2ecc71"
-            }}
+            animate={{ scale: isAdding ? 1.1 : 1, background: isAdding ? "#27ae60" : "#2ecc71" }}
             disabled={isAdding}
             style={{
             padding: "0.5rem 1rem",
@@ -105,22 +148,14 @@ import { useCart } from "../context/CartContext";
             }}
         >
             {isAdding ? (
-            <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-            >
-                Adding...
-            </motion.span>
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>Adding...</motion.span>
             ) : (
-            <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-            >
-                {isInCart ? `Add More (${cartItem.quantity} in cart)` : "Add to Cart"}
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                {isInCart ? `Add More (${cartItem.quantity})` : "Add to Cart"}
             </motion.span>
             )}
-            
-            {/* Loading animation */}
+
+            {/* Loading Animation */}
             {isAdding && (
             <motion.div
                 style={{
@@ -131,16 +166,32 @@ import { useCart } from "../context/CartContext";
                 bottom: 0,
                 background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
                 }}
-                animate={{
-                x: ["0%", "100%", "100%", "0%"],
-                }}
-                transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                }}
+                animate={{ x: ["0%", "100%", "100%", "0%"] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
             />
             )}
         </motion.button>
+
+        {/* Wishlist Status Badge */}
+        {inWishlist && (
+            <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={{
+                position: "absolute",
+                bottom: "10px",
+                right: "10px",
+                background: "rgba(231, 76, 60, 0.9)",
+                color: "white",
+                padding: "2px 6px",
+                borderRadius: "8px",
+                fontSize: "0.6rem",
+                fontWeight: "600",
+            }}
+            >
+            In Wishlist
+            </motion.div>
+        )}
         </motion.div>
     );
     }
