@@ -2,34 +2,43 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext"; // added
 import products from "../data/products";
 
     export default function ProductDetail() {
     const { id } = useParams();
     const { addToCart, cartItems } = useCart();
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist(); // wishlist hook
+
     const [isAdding, setIsAdding] = useState(false);
+    const [isWishlisting, setIsWishlisting] = useState(false);
+
     const product = products.find((p) => p.id === Number(id));
-
-    // Check if product is in cart
-    const isInCart = cartItems.some(item => item.id === product?.id);
-    const cartItem = cartItems.find(item => item.id === product?.id);
-
-    const handleAddToCart = async () => {
-        if (!product) return;
-        
-        setIsAdding(true);
-        addToCart(product);
-        
-        // Reset animation after short delay
-        setTimeout(() => setIsAdding(false), 500);
-    };
-
     if (!product)
         return (
         <div style={{ padding: "2rem", textAlign: "center", color: "#eee" }}>
             Product not found.
         </div>
         );
+
+    // Cart status
+    const isInCart = cartItems.some(item => item.id === product.id);
+    const cartItem = cartItems.find(item => item.id === product.id);
+
+    // Wishlist status
+    const inWishlist = isInWishlist(product.id);
+
+    const handleAddToCart = () => {
+        setIsAdding(true);
+        addToCart(product);
+        setTimeout(() => setIsAdding(false), 500);
+    };
+
+    const handleWishlistToggle = () => {
+        setIsWishlisting(true);
+        inWishlist ? removeFromWishlist(product.id) : addToWishlist(product);
+        setTimeout(() => setIsWishlisting(false), 500);
+    };
 
     return (
         <motion.div
@@ -93,17 +102,11 @@ import products from "../data/products";
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1 }}
-                style={{
-                color: "#2ecc71",
-                fontSize: "2rem",
-                marginBottom: "10px",
-                fontWeight: 600,
-                }}
+                style={{ color: "#2ecc71", fontSize: "2rem", marginBottom: "10px", fontWeight: 600 }}
             >
                 {product.name}
             </motion.h2>
 
-            {/* Category */}
             <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -126,12 +129,7 @@ import products from "../data/products";
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                style={{
-                color: "#ccc",
-                lineHeight: 1.6,
-                marginBottom: "15px",
-                fontSize: "1.1rem",
-                }}
+                style={{ color: "#ccc", lineHeight: 1.6, marginBottom: "15px", fontSize: "1.1rem" }}
             >
                 {product.description}
             </motion.p>
@@ -140,12 +138,7 @@ import products from "../data/products";
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
-                style={{
-                color: "#2ecc71",
-                fontSize: "1.8rem",
-                fontWeight: 600,
-                marginBottom: "10px",
-                }}
+                style={{ color: "#2ecc71", fontSize: "1.8rem", fontWeight: 600, marginBottom: "10px" }}
             >
                 ₹{product.price}
             </motion.h3>
@@ -155,14 +148,9 @@ import products from "../data/products";
                 <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                style={{
-                    color: "#2ecc71",
-                    fontSize: "0.9rem",
-                    marginBottom: "15px",
-                    fontWeight: "500",
-                }}
+                style={{ color: "#2ecc71", fontSize: "0.9rem", marginBottom: "15px", fontWeight: 500 }}
                 >
-                ✅ {cartItem.quantity} {cartItem.quantity === 1 ? 'item' : 'items'} in cart
+                ✅ {cartItem.quantity} {cartItem.quantity === 1 ? "item" : "items"} in cart
                 </motion.div>
             )}
 
@@ -176,9 +164,7 @@ import products from "../data/products";
                     boxShadow: isAdding ? "0 0 15px rgba(46,204,113,0.5)" : "0 0 25px rgba(46,204,113,0.8)",
                 }}
                 whileTap={{ scale: 0.97 }}
-                animate={{ 
-                    background: isAdding ? "#27ae60" : "#2ecc71"
-                }}
+                animate={{ background: isAdding ? "#27ae60" : "#2ecc71" }}
                 disabled={isAdding}
                 transition={{ duration: 0.3 }}
                 style={{
@@ -194,26 +180,10 @@ import products from "../data/products";
                     fontSize: "1rem",
                     minWidth: "160px",
                     position: "relative",
-                    overflow: "hidden"
+                    overflow: "hidden",
                 }}
                 >
-                {isAdding ? (
-                    <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    >
-                    Adding...
-                    </motion.span>
-                ) : (
-                    <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    >
-                    {isInCart ? "Add More" : "Add to Cart"}
-                    </motion.span>
-                )}
-                
-                {/* Loading animation */}
+                {isAdding ? "Adding..." : isInCart ? "Add More" : "Add to Cart"}
                 {isAdding && (
                     <motion.div
                     style={{
@@ -224,31 +194,37 @@ import products from "../data/products";
                         bottom: 0,
                         background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
                     }}
-                    animate={{
-                        x: ["0%", "100%", "100%", "0%"],
-                    }}
-                    transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                    }}
+                    animate={{ x: ["0%", "100%", "100%", "0%"] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
                     />
                 )}
                 </motion.button>
 
-                {/* View Cart Button - FIXED */}
-                {isInCart && (
-                <Link 
-                    to="/cart" 
-                    style={{ 
-                    textDecoration: "none",
-                    display: "inline-block"
-                    }}
+                {/* Wishlist Button */}
+                <motion.button
+                onClick={handleWishlistToggle}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                animate={{ scale: isWishlisting ? 1.2 : 1 }}
+                style={{
+                    background: "transparent",
+                    border: "2px solid #e74c3c",
+                    color: inWishlist ? "#e74c3c" : "#fff",
+                    borderRadius: "8px",
+                    padding: "12px 24px",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    minWidth: "140px",
+                }}
                 >
+                {inWishlist ? "❤️ Remove from Wishlist" : "🤍 Add to Wishlist"}
+                </motion.button>
+
+                {/* View Cart Button */}
+                {isInCart && (
+                <Link to="/cart" style={{ textDecoration: "none", display: "inline-block" }}>
                     <motion.button
-                    whileHover={{ 
-                        scale: 1.05,
-                        boxShadow: "0 0 15px rgba(46,204,113,0.3)"
-                    }}
+                    whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(46,204,113,0.3)" }}
                     whileTap={{ scale: 0.97 }}
                     style={{
                         background: "transparent",
@@ -258,9 +234,7 @@ import products from "../data/products";
                         borderRadius: "10px",
                         cursor: "pointer",
                         fontWeight: "bold",
-                        letterSpacing: "0.5px",
-                        transition: "all 0.3s ease",
-                        minWidth: "140px"
+                        minWidth: "140px",
                     }}
                     >
                     View Cart
@@ -271,7 +245,7 @@ import products from "../data/products";
             </div>
         </div>
 
-        {/* Additional Product Details Section */}
+        {/* Additional Product Details */}
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
