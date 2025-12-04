@@ -1,17 +1,251 @@
-import { useContext, useState } from "react";
+    import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
-import products from "../data/products";
 
-export default function BestSellers() {
+    // Import product images
+    import AloeGel from "../assets/images/aloe-vera.jpg";
+import bamboo from "../assets/images/Bamboo Toothbrush.jpg";
+import blue from "../assets/images/Bluetooth Speaker.jpg";
+import mug from "../assets/images/Ceramic Mug Set.jpg";
+import Charcol from "../assets/images/charcol-face-mask.jpg";
+import Coconut from "../assets/images/coconut.jpg";
+import cotton from "../assets/images/Cotton Bath Towel.jpg";
+import denimJacket from "../assets/images/Denim Jacket.jpg";
+import HerbalOil from "../assets/images/herbal-oil.jpg";
+import laptop from "../assets/images/Laptop Backpack.jpg";
+import belt from "../assets/images/Leather Belt.webp";
+import Neem from "../assets/images/Neem Anti-Dandruff Oil.jpg";
+import RoseMist from "../assets/images/rose-mist.jpg";
+import candle from "../assets/images/Scented Candle Set.jpg";
+import smart from "../assets/images/Smart Watch.jpg";
+import wireless from "../assets/images/Wireless Earbuds.jpg";
+
+    // Product data with all required properties
+    const products = [
+    // Skincare
+    {
+        id: 1,
+        name: "Aloe Vera Gel",
+        price: 299,
+        originalPrice: 399,
+        description: "Hydrates and nourishes skin with pure aloe essence.",
+        image: AloeGel,
+        category: "Skincare",
+        rating: 4.7,
+        sold: 1200,
+        discount: 25,
+        isBestSeller: true
+    },
+    {
+        id: 2,
+        name: "Rose Face Mist",
+        price: 199,
+        originalPrice: 299,
+        description: "Refreshes your skin and gives an instant glow.",
+        image: RoseMist,
+        category: "Skincare",
+        rating: 4.6,
+        sold: 850,
+        discount: 33,
+        isBestSeller: true
+    },
+    {
+        id: 3,
+        name: "Herbal Hair Oil",
+        price: 349,
+        originalPrice: 499,
+        description: "Strengthens roots and promotes healthy hair growth.",
+        image: HerbalOil,
+        category: "Haircare",
+        rating: 4.8,
+        sold: 1500,
+        discount: 30,
+        isBestSeller: true
+    },
+    {
+        id: 4,
+        name: "Charcoal Face Mask",
+        price: 399,
+        description: "Deep cleanses pores and removes impurities.",
+        image: Charcol,
+        category: "Skincare",
+        rating: 4.5,
+        sold: 600,
+        discount: 0,
+        isBestSeller: false
+    },
+
+    // Haircare
+    {
+        id: 5,
+        name: "Coconut Shampoo",
+        price: 299,
+        originalPrice: 399,
+        description: "Nourishing shampoo for shiny, strong hair.",
+        image: Coconut,
+        category: "Haircare",
+        rating: 4.9,
+        sold: 2000,
+        discount: 25,
+        isBestSeller: true
+    },
+    {
+        id: 6,
+        name: "Neem Anti-Dandruff Oil",
+        price: 299,
+        description: "Natural neem formula for dandruff-free scalp.",
+        image: Neem,
+        category: "Haircare",
+        rating: 4.3,
+        sold: 450,
+        discount: 0,
+        isBestSeller: false
+    },
+
+    // Electronics
+    {
+        id: 7,
+        name: "Wireless Earbuds",
+        price: 1999,
+        originalPrice: 2999,
+        description: "Crystal-clear sound with noise cancellation.",
+        image: wireless,
+        category: "Electronics",
+        rating: 4.8,
+        sold: 3000,
+        discount: 33,
+        isBestSeller: true
+    },
+    {
+        id: 8,
+        name: "Smart Watch",
+        price: 2499,
+        originalPrice: 3499,
+        description: "Track your health and stay connected on the go.",
+        image: smart,
+        category: "Electronics",
+        rating: 4.7,
+        sold: 1800,
+        discount: 29,
+        isBestSeller: true
+    },
+    {
+        id: 9,
+        name: "Bluetooth Speaker",
+        price: 999,
+        originalPrice: 1499,
+        description: "Portable speaker with powerful bass.",
+        image: blue,
+        category: "Electronics",
+        rating: 4.6,
+        sold: 2200,
+        discount: 33,
+        isBestSeller: true
+    },
+    {
+        id: 10,
+        name: "Laptop Backpack",
+        price: 1299,
+        description: "Waterproof and lightweight travel backpack.",
+        image: laptop,
+        category: "Electronics",
+        rating: 4.4,
+        sold: 750,
+        discount: 0,
+        isBestSeller: false
+    },
+
+    // Fashion
+    {
+        id: 11,
+        name: "Denim Jacket",
+        price: 1599,
+        originalPrice: 1999,
+        description: "Trendy and durable denim jacket.",
+        image: denimJacket,
+        category: "Fashion",
+        rating: 4.7,
+        sold: 900,
+        discount: 20,
+        isBestSeller: true
+    },
+    {
+        id: 12,
+        name: "Leather Belt",
+        price: 799,
+        originalPrice: 999,
+        description: "Premium leather belt for men.",
+        image: belt,
+        category: "Fashion",
+        rating: 4.5,
+        sold: 1200,
+        discount: 20,
+        isBestSeller: true
+    },
+
+    // Home Essentials
+    {
+        id: 13,
+        name: "Scented Candle Set",
+        price: 499,
+        originalPrice: 699,
+        description: "Relaxing aroma for your home and mind.",
+        image: candle,
+        category: "Home Essentials",
+        rating: 4.8,
+        sold: 1500,
+        discount: 29,
+        isBestSeller: true
+    },
+    {
+        id: 14,
+        name: "Bamboo Toothbrush",
+        price: 199,
+        description: "Eco-friendly toothbrush with soft bristles.",
+        image: bamboo,
+        category: "Home Essentials",
+        rating: 4.2,
+        sold: 500,
+        discount: 0,
+        isBestSeller: false
+    },
+    {
+        id: 15,
+        name: "Cotton Bath Towel",
+        price: 699,
+        originalPrice: 899,
+        description: "Super absorbent and soft touch.",
+        image: cotton,
+        category: "Home Essentials",
+        rating: 4.6,
+        sold: 800,
+        discount: 22,
+        isBestSeller: true
+    },
+    {
+        id: 16,
+        name: "Ceramic Mug Set",
+        price: 899,
+        originalPrice: 1199,
+        description: "Elegant mugs for your morning coffee.",
+        image: mug,
+        category: "Home Essentials",
+        rating: 4.7,
+        sold: 1100,
+        discount: 25,
+        isBestSeller: true
+    },
+    ];
+
+    export default function BestSellers() {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [sortBy, setSortBy] = useState("popularity");
     const [addingToCart, setAddingToCart] = useState({});
     const { addToCart } = useContext(CartContext);
     const { addToWishlist, removeFromWishlist, isInWishlist } = useContext(WishlistContext);
 
-    // Get best sellers (products with rating >= 4.5)
+    // Get best sellers (products with rating >= 4.5 OR isBestSeller === true)
     const bestSellersProducts = products.filter(product => 
         product.rating >= 4.5 || product.isBestSeller === true
     );
@@ -25,14 +259,14 @@ export default function BestSellers() {
     const sortedProducts = [...filteredProducts].sort((a, b) => {
         switch(sortBy) {
         case "price-low":
-            return a.price - b.price;
+        return a.price - b.price;
         case "price-high":
-            return b.price - a.price;
+        return b.price - a.price;
         case "rating":
-            return b.rating - a.rating;
+        return b.rating - a.rating;
         case "popularity":
         default:
-            return (b.sold || 0) - (a.sold || 0);
+        return (b.sold || 0) - (a.sold || 0);
         }
     });
 
@@ -176,6 +410,10 @@ export default function BestSellers() {
                             src={product.image} 
                             alt={product.name} 
                             className="product-image"
+                            onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = "https://via.placeholder.com/300x200?text=Product+Image";
+                            }}
                         />
                         </div>
 
@@ -187,9 +425,9 @@ export default function BestSellers() {
                         
                         <div className="product-price-section">
                             <div className="price-container">
-                            <span className="product-price">${product.price.toFixed(2)}</span>
+                            <span className="product-price">₹{product.price.toFixed(2)}</span>
                             {product.originalPrice && (
-                                <span className="product-original-price">${product.originalPrice.toFixed(2)}</span>
+                                <span className="product-original-price">₹{product.originalPrice.toFixed(2)}</span>
                             )}
                             </div>
                             <span className="product-sold">{product.sold || 0} sold</span>
@@ -222,6 +460,7 @@ export default function BestSellers() {
         </div>
 
         <style jsx>{`
+            /* Your existing CSS styles remain exactly the same */
             .best-sellers-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -334,10 +573,10 @@ export default function BestSellers() {
 
             .sort-select {
             padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.1);
+            background:white;
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
-            color: white;
+            color: black;
             font-size: 0.9rem;
             min-width: 200px;
             cursor: pointer;
@@ -447,8 +686,9 @@ export default function BestSellers() {
 
             .wishlist-btn {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 0.1rem;
+            // bottom : 1rem ;
+            right: 0.5rem;
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
@@ -486,6 +726,11 @@ export default function BestSellers() {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+            }
+
+            .product-card:hover .product-image {
+            transform: scale(1.05);
             }
 
             .product-info {
@@ -613,4 +858,4 @@ export default function BestSellers() {
         `}</style>
         </div>
     );
-}
+    }

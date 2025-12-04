@@ -14,7 +14,6 @@ import NewArrivals from "./pages/NewArrivals";
 import Orders from "./pages/Orders";
 import ProductDetail from "./pages/ProductDetail";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
 import Wishlist from "./pages/Wishlist";
 
 export default function App() {
@@ -57,7 +56,7 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/orders" element={<Orders />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />
+              {/* <Route path="/settings" element={<Settings />} /> */}
 
               {/* 404 Page */}
               <Route

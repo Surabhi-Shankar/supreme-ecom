@@ -11,10 +11,10 @@ import { Link } from "react-router-dom";
     ]);
 
     const [teamMembers, setTeamMembers] = useState([
-        { id: 1, name: "Alex Johnson", role: "Founder & CEO", image: "👨‍💼", description: "Visionary leader with 15+ years in e-commerce" },
-        { id: 2, name: "Sarah Chen", role: "Head of Products", image: "👩‍💻", description: "Product expert passionate about quality" },
-        { id: 3, name: "Marcus Lee", role: "Customer Success", image: "👨‍💼", description: "Ensures every customer has a great experience" },
-        { id: 4, name: "Emma Davis", role: "Tech Lead", image: "👩‍🔧", description: "Builds seamless shopping experiences" }
+        { id: 1, name: "Surabhi Shankar", role: "Founder & CEO", image: "👨‍💼", description: "Visionary leader with 15+ years in e-commerce" },
+        { id: 2, name: "Eren", role: "Head of Products", image: "👨‍💼", description: "Product expert passionate about quality" },
+        { id: 3, name: "Light", role: "Customer Success", image: "👨‍💼", description: "Ensures every customer has a great experience" },
+        { id: 4, name: "Luffy", role: "Tech Lead", image: "👩‍🔧", description: "Builds seamless shopping experiences" }
     ]);
 
     const [values, setValues] = useState([
@@ -51,7 +51,7 @@ import { Link } from "react-router-dom";
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="hero-cta"
             >
-                <Link to="/products" className="cta-button primary">
+                <Link to="/" className="cta-button primary">
                 Shop Now
                 </Link>
                 <Link to="/contact" className="cta-button secondary">
@@ -200,7 +200,7 @@ import { Link } from "react-router-dom";
             </p>
             <div className="cta-buttons">
                 <Link to="/signup" className="cta-button primary">Sign Up Free</Link>
-                <Link to="/products" className="cta-button outline">Browse Products</Link>
+                {/* <Link to="/products" className="cta-button outline">Browse Products</Link> */}
             </div>
             </div>
         </section>

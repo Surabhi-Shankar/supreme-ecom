@@ -17,19 +17,19 @@ import { useState } from "react";
             {
             icon: "📍",
             title: "Visit Our Office",
-            details: ["123 Commerce Street", "San Francisco, CA 94107", "United States"],
+            details: ["Hytech city", "Hyd", "India"],
             color: "#3B82F6"
             },
             {
             icon: "📞",
             title: "Call Us",
-            details: ["+1 (555) 123-4567", "+1 (555) 987-6543"],
+            details: ["+91 8247733797", "+91 9014770849"],
             color: "#10B981"
             },
             {
             icon: "✉️",
             title: "Email Us",
-            details: ["support@shoptastic.com", "sales@shoptastic.com"],
+            details: ["surabhishankar577@gmail.com", "shankarsurabhi754@gmail.com"],
             color: "#8B5CF6"
             },
             {
@@ -262,17 +262,17 @@ import { useState } from "react";
                         </div>
                         <div className="map-overlay">
                         <h3>Our Headquarters</h3>
-                        <p>123 Commerce Street, San Francisco</p>
-                        <button className="map-button">Open in Maps</button>
+                        <p>Hytech city , Hyd , India</p>
+                        {/* <button className="map-button">Open in Maps</button> */}
                         </div>
                     </div>
                     </div>
                     
                     <div className="additional-info">
                     <h3>Need Immediate Help?</h3>
-                    <p>Call us now: <span className="highlight">+1 (555) 123-4567</span></p>
-                    <p>Or chat with our support team 24/7</p>
-                    <button className="chat-button">💬 Start Live Chat</button>
+                    <p>Call us now: <span className="highlight">+91 8247733797</span></p>
+                    {/* <p>Or chat with our support team 24/7</p> */}
+                    {/* <button className="chat-button">💬 Start Live Chat</button> */}
                     </div>
                 </div>
                 </div>
@@ -517,10 +517,10 @@ import { useState } from "react";
                 .form-group select,
                 .form-group textarea {
                 padding: 0.8rem 1rem;
-                background: rgba(255, 255, 255, 0.05);
+                background:white;
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 10px;
-                color: white;
+                color: black;
                 font-size: 0.95rem;
                 transition: all 0.3s ease;
                 }

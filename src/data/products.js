@@ -170,7 +170,7 @@ import wireless from "../assets/images/Wireless Earbuds.jpg";
         category: "Home Essentials",
     },
     {
-        id: 19,
+        id: 19, 
         name: "Cotton Bath Towel",
         price: 699,
         description: "Super absorbent and soft touch.",

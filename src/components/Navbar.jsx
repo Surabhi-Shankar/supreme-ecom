@@ -19,7 +19,7 @@ export default function Navbar({ products, setFilteredProducts }) {
     const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
     const wishlistItemCount = wishlistItems.length; // Wishlist count
 
-    const categories = ["All", "Skincare", "Haircare", "Electronics", "Fashion", "Home Essentials"];
+    // const categories = ["All", "Skincare", "Haircare", "Electronics", "Fashion", "Home Essentials"];
     const menuItems = [
         { name: "Best Sellers", path: "/best-sellers" },
         { name: "New Arrivals", path: "/new-arrivals" },
@@ -31,7 +31,7 @@ export default function Navbar({ products, setFilteredProducts }) {
         { name: "My Profile", path: "/profile" },
         { name: "Orders", path: "/orders" },
         { name: "Wishlist", path: "/wishlist" },
-        { name: "Settings", path: "/settings" },
+        // { name: "Settings", path: "/settings" },
         { name: "Sign Out", path: "#" }
     ];
 
@@ -273,7 +273,7 @@ export default function Navbar({ products, setFilteredProducts }) {
                             )
                         ))}
                     </div>
-                    <div className="category-filters">
+                    {/* <div className="category-filters">
                         {categories.map((cat) => (
                             <button
                                 key={cat}
@@ -283,12 +283,12 @@ export default function Navbar({ products, setFilteredProducts }) {
                                 {cat}
                             </button>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
             )}
 
             {/* Category Bar (Desktop) */}
-            {windowWidth > 1024 && (
+            {/* {windowWidth > 1024 && (
                 <div className="category-bar">
                     {categories.map((cat) => (
                         <button
@@ -300,7 +300,7 @@ export default function Navbar({ products, setFilteredProducts }) {
                         </button>
                     ))}
                 </div>
-            )}
+            )} */}
 
             <style jsx>{`
                 .navbar {
